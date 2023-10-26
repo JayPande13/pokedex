@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
     this.isSpinning = true;
     this.pokedexService.getAllPokemonForSearch().subscribe((res: any) => {
       this.pokemonList = res.results;
-      this.totalElements = res.count;
       this.getPokemonData();
     })
 
@@ -38,8 +37,10 @@ export class AppComponent implements OnInit {
 
   getPokemonData(size?: number, offset?: number) {
     this.isSpinning = true;
+    this.searchValue = "";
     this.searchPokemonList = [];
     this.pokedexService.getPokemonDetails(size, offset).subscribe((res: any) => {
+      this.totalElements = res.count;
       res.results.forEach((result: any) => {
         this.pokedexService.getIndividualPokemonDetails(result.name).subscribe((individualData: any) => {
           this.searchPokemonList.push(individualData);
@@ -77,9 +78,16 @@ export class AppComponent implements OnInit {
           this.pokedexService.getIndividualPokemonDetails(poke.name).subscribe((individualData: any) => {
             this.searchPokemonList.push(individualData);
             this.searchPokemonList = cloneDeep(this.searchPokemonList);
+            this.totalElements = this.searchPokemonList?.length;
           })
         })
 
+      } else {
+        this.notification.error(
+          'No Data',
+          'Sorry, No Pokemon found',
+          { nzPlacement: "top" }
+        );
       }
       this.isSpinning = false;
     } else {
