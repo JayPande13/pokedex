@@ -1,0 +1,25 @@
+.capitalize {
+  text-transform: capitalize;
+}
+
+.roundCorner {
+  border-radius: 25px;
+}
+
+.greyColor {
+  color: grey;
+}
+
+nz-content {
+  padding: 0 50px;
+}
+
+nz-footer {
+  text-align: center;
+}
+
+.inner-content {
+  background: #fff;
+  padding: 24px;
+  min-height: 280px;
+}

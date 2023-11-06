@@ -1,0 +1,124 @@
+<nz-layout>
+  <nz-header>
+    <h2 style="color: white;">PokeDex</h2>
+  </nz-header>
+  <nz-content>
+    <nz-spin nzTip="Loading..." [nzSpinning]="isSpinning">
+      <div class="inner-content">
+        <div style="background: #ECECEC;">
+          <div nz-row style="padding-top: 1rem;">
+            <div nz-col nzSpan="6" nzOffset="9">
+              <nz-input-group nzSearch nzSize="large">
+                <input type="text" nz-input placeholder="Search Pokemon" [(ngModel)]="searchValue" />
+              </nz-input-group>
+            </div>
+            <div nz-col nzSpan="4" nzOffset="4">
+              <button nz-button nzType="primary" nzDanger nzSize="large" (click)="getPokemonData()">Reset</button>
+              <button nz-button nzType="primary" nzSize="large" (click)="searchPokemon()" style="margin-left:0.1rem"
+                (keydown.enter)="searchPokemon()">Search</button>
+            </div>
+          </div>
+
+          <div nz-row>
+            <div style="padding:30px;" *ngFor="let data of searchPokemonList">
+              <div nz-col [nzSpan]="12">
+                <nz-card nzHoverable style="width:270px" [nzCover]="coverTemplate" [nzActions]="[actionView]">
+                  <nz-card-meta [nzTitle]="data.name | uppercase"></nz-card-meta>
+                  <br>
+                  <div nz-row>
+                    <h4>Type : &nbsp;</h4>
+                    <p *ngFor="let type of data.types">
+                      <nz-tag [nzColor]="'cyan'" class="capitalize roundCorner">{{type.type.name}}</nz-tag>
+                    </p>
+                  </div>
+                  <div nz-row>
+                    <h4>Ability : &nbsp;</h4>
+                    <p *ngFor="let ab of data.abilities">
+                      <nz-tag [nzColor]="'yellow'" class="capitalize roundCorner">{{ab.ability.name}}</nz-tag>
+                    </p>
+                  </div>
+                  <div nz-row>
+                    <h4>Health : &nbsp;</h4>
+                    <p>
+                      {{data.stats[0].base_stat}}
+                    </p>
+                  </div>
+                  <div nz-row>
+                    <h4>Attack : &nbsp;</h4>
+                    <p>
+                      {{data.stats[1].base_stat}}
+                    </p>
+                  </div>
+                  <div nz-row>
+                    <h4>Defence : &nbsp;</h4>
+                    <p>
+                      {{data.stats[2].base_stat}}
+                    </p>
+                  </div>
+                </nz-card>
+              </div>
+              <ng-template #actionView>
+                <span nz-icon nzType="eye" (click)="viewModalOpener(data)"></span>
+              </ng-template>
+              <ng-template #coverTemplate>
+                <img alt="example" [src]="data.sprites.front_default" />
+              </ng-template>
+
+            </div>
+          </div>
+          <div nz-row>
+            <div nz-col nzSpan="15"></div>
+            <nz-pagination [nzPageIndex]="page" [nzPageSize]="size" [nzTotal]="totalElements" nzShowQuickJumper
+              [nzResponsive]="true" (nzPageIndexChange)="onPageIndexChange($event)">
+            </nz-pagination>
+          </div>
+          <br>
+
+        </div>
+
+      </div>
+    </nz-spin>
+  </nz-content>
+  <nz-footer>Pokedex Design by Jyotirmay Pande</nz-footer>
+</nz-layout>
+
+
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="this.clickedPokemonData?.name | uppercase" (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()" [nzWidth]="1200">
+  <ng-container *nzModalContent>
+    <div nz-row>
+      <div nz-col [nzSpan]="12">
+        <h3>Description: <span class="greyColor">{{charteristicDescription}}</span></h3>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <h3>Height: <span class="greyColor"> {{this.clickedPokemonData?.height}}</span></h3>
+      </div>
+    </div>
+    <br />
+    <div nz-row>
+      <div nz-col [nzSpan]="12">
+        <h3>Weight: <span class="greyColor">{{this.clickedPokemonData?.weight}}</span></h3>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <h3>Habitat: <span class="greyColor">{{capitalizeFirstLetter (this.habitatDetails?.name)}}</span></h3>
+      </div>
+    </div>
+    <br />
+    <div nz-row>
+      <h4>Base Stats : &nbsp; </h4>
+      <!-- <div nz-col [nzSpan]="12"> -->
+      <p *ngFor="let st of clickedPokemonData?.stats">
+        <nz-tag [nzColor]="'blue'" class="capitalize roundCorner"> {{st.stat.name | uppercase}} : &nbsp;
+          {{st.base_stat}}</nz-tag>
+      </p>
+      <!-- </div> -->
+    </div>
+    <br />
+    <div nz-row>
+      <h4>Moves : &nbsp; </h4>
+      <p *ngFor="let mv of clickedPokemonData?.moves">
+        <nz-tag [nzColor]="'grey'" class="capitalize roundCorner">{{mv.move.name | uppercase}} , &nbsp;</nz-tag>
+      </p>
+    </div>
+  </ng-container>
+</nz-modal>
